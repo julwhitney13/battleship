@@ -1,27 +1,30 @@
 defmodule BattleshipWeb.PlayerChannel do
-  use BattleshipWeb, :channel
-  alias Battleship.Game
+    use BattleshipWeb, :channel
+    alias BattleshipWeb.Game
+    alias BattleshipWeb.GameAgent
 
-  def join("player:" <> name, _payload, socket) do
-    if authorized?(socket, name) do
-      game = Game.new()
-      socket = socket
-      |> assign(:game, game)
-      |> assign(:name, name)
-      {:ok, Game.client_view(game), socket}
-    else
-      {:error, %{reason: "unauthorized"}}
+    def join("player:" <> name, _payload, socket) do
+      if authorized?(socket, name) do
+        game = GameAgent.get(name) || Game.new()
+        GameAgent.put(name, game)
+        socket = socket
+        |> assign(:name, name)
+        {:ok, Game.client_view(game), socket}
+      else
+        {:error, %{reason: "unauthorized"}}
+      end
     end
-  end
 
-  def handle_in("guess", %{"letter" => ll}, socket) do
-    game = Game.guess(socket.assigns[:game], ll)
-    socket = assign(socket, :game, game)
-    {:reply, {:ok, Game.client_view(game)}, socket}
-  end
+    def handle_in("guess", %{"letter" => ll}, socket) do
+      name = socket.assigns[:name]
+      game = name
+      |> GameAgent.get()
+      |> Game.guess(ll)
+      GameAgent.put(name, game)
+      {:reply, {:ok, Game.client_view(game)}, socket}
+    end
 
-  defp authorized?(socket, name) do
-    socket.assigns[:username] == name
-  end
-
+    defp authorized?(socket, name) do
+      socket.assigns[:username] == name
+    end
 end
