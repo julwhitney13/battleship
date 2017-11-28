@@ -22,20 +22,23 @@ import "phoenix_html"
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-// Channel join functions referenced from Nat Tuck Hangman Code https://github.com/NatTuck/hangman
+import socket from "./socket";
+import Game from "./components/game";
+
 function ready(channel, state) {
   let root = document.getElementById('root');
   ReactDOM.render(<Game state={state} channel={channel} />, root);
 }
 
+// Channel join functions referenced from Nat Tuck Hangman Code https://github.com/NatTuck/hangman
 function start() {
-  let channel = socket.channel("player:" + window.user_name, {});
+  let channel = socket.channel("player:" + window.user_name, {})
   channel.join()
     .receive("ok", state0 => {
-      console.log("Joined successfully", state0);
-      ready(channel, state0);
+      console.log("Joined successfully", state0 )
+      ready(channel, state0)
     })
-    .receive("error", resp => { console.log("Unable to join", resp); });
+    .receive("error", resp => { console.log("Unable to join", resp) })
 }
 
 $(start);
