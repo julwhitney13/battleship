@@ -1,3 +1,39 @@
-<div id="main">
-  <p>Main</p>
+<div class="container">
+<div class="row">
+    <%= if @game_code do %>
+        <div class="col-md-12">
+            <h5>GameCode: <%= @game_code %></h5>
+            <div id="game"><p>Waiting for another player to join your game</p></div>
+        </div>
+    <% else %>
+        <div class="col-md-4">
+            <%= form_for @conn, page_path(@conn, :joingame), fn f -> %>
+            <input type="text" placeholder="Game Code" class="form-control mt-2" name="gamecode">
+            <input type="submit" value="Join or Start Game" class="btn btn-info mt-2">
+            <% end %>
+        </div>
+    <% end %>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <%= if @user_name do %>
+            <h5>Username: <%= @user_name %></h5>
+        <% else %>
+            <%= form_for @conn, page_path(@conn, :login), fn f -> %>
+            <input type="text" placeholder="Username" class="form-control mt-2" name="username">
+            <input type="submit" value="Log in" class="btn btn-info mt-2">
+            <% end %>
+        <% end %>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-block">
+              <h4 class="card-title">Chat</h4>
+              <p id="table" style="border-radius: 0 !important" class="card-text">Table</p>
+            </div>
+        </div>
+    </div>
+</div>
 </div>

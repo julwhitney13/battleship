@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonGroup } from 'react-bootstrap';
+import { Button, ButtonGroup, ButtonToolbar} from 'react-bootstrap';
 
 class Tile extends React.Component {
 
@@ -9,8 +9,8 @@ class Tile extends React.Component {
 
   render() {
     return (
-        <Button onClick={this.click.bind(this)} disabled={this.props.disabled} bsStyle={this.props.color}>
-        </Button>
+        <Button onClick={this.click.bind(this)} disabled={this.props.disabled} bsSize="large" bsStyle={this.props.color}>
+        &nbsp;&nbsp;&nbsp;</Button>
     );
   }
 }
@@ -26,7 +26,7 @@ export default class Tiles extends React.Component {
         return "danger"
     }
     if (this.props.game.misses.includes(tile_coord)) {
-        return ""
+        return "default"
     }
     return "info"
   }
@@ -50,6 +50,7 @@ export default class Tiles extends React.Component {
         }
     }
     return (
+    <ButtonToolbar>
         <ButtonGroup>
             {buttons[0]}
         </ButtonGroup>
@@ -80,6 +81,7 @@ export default class Tiles extends React.Component {
         <ButtonGroup>
             {buttons[9]}
         </ButtonGroup>
+    </ButtonToolbar>
     );
   }
 }

@@ -24,21 +24,39 @@ import ReactDOM from 'react-dom';
 
 import socket from "./socket";
 import Game from "./components/game";
+import Lobby from "./components/lobby";
 
-function ready(channel, state) {
-  let root = document.getElementById('root');
-  ReactDOM.render(<Game state={state} channel={channel} />, root);
+function readyGame(playerChannel, gameChannel, state) {
+    let game = document.getElementById('game');
+    ReactDOM.render(<Game playerChannel={playerChannel} channel={gameChannel} state={state} />, game)
 }
 
-// Channel join functions referenced from Nat Tuck Hangman Code https://github.com/NatTuck/hangman
+function readyTable(channel, tableChannel, username) {
+    let table = document.getElementById('table');
+    ReactDOM.render(<Lobby channel={channel} tableChannel={tableChannel} user={username}/>, table)
+}
+
 function start() {
-  let channel = socket.channel("player:" + window.user_name, {})
-  channel.join()
-    .receive("ok", state0 => {
-      console.log("Joined successfully", state0 )
-      ready(channel, state0)
-    })
-    .receive("error", resp => { console.log("Unable to join", resp) })
+  let game_code = (window.game_code) ? window.game_code : "lobby"
+
+  let playerChannel = socket.channel("player:" + window.user_name, {code: game_code})
+  let table = socket.channel("table:" + game_code, {username: window.user_name})
+
+  playerChannel.join()
+      .receive("ok", state0 => {
+          console.log(game_code + "game joined")
+          readyGame(playerChannel, table, state0)
+     })
+     .receive("error", resp => { console.log("Unable to join game " + game_code, resp) })
+
+  table.join()
+    .receive("ok", _ => {
+        console.log("table joined")
+        readyTable(playerChannel, table, window.user_name)
+   })
+   .receive("error", resp => { console.log("Unable to join all table", resp) })
+
+
 }
 
 $(start);

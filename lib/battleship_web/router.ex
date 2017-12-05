@@ -1,10 +1,13 @@
 defmodule BattleshipWeb.Router do
   use BattleshipWeb, :router
+  import BattleshipWeb.Plugs
 
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_flash
+    plug :fetch_user
+    plug :fetch_game
     plug :protect_from_forgery
     plug :put_secure_browser_headers
   end
@@ -17,16 +20,10 @@ defmodule BattleshipWeb.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
+    post "/", PageController, :login
+    post "/join", PageController, :joingame
   end
 
-  # set_user referenced from Nat Tuck Hangman Code https://github.com/NatTuck/hangman
-  def set_user(conn, _params) do
-    user  = "jake"
-    token = Phoenix.Token.sign(BattleshipWeb.Endpoint, "username", user)
-    conn
-    |> assign(:user_name,  user)
-    |> assign(:user_token, token)
-  end
   # Other scopes may use custom stacks.
   # scope "/api", BattleshipWeb do
   #   pipe_through :api

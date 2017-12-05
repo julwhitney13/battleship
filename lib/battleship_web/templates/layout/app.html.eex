@@ -35,6 +35,7 @@
         <script>
             window.user_name  = "<%= @user_name %>";
             window.user_token = "<%= @user_token %>";
+            window.game_code = "<%= @game_code %>";
         </script>
     <% end %>
 

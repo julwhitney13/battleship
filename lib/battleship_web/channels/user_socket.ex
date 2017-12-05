@@ -4,7 +4,8 @@ defmodule BattleshipWeb.UserSocket do
   ## Channels
   # channel "room:*", BattleshipWeb.RoomChannel
   # Player channel referenced from Nat Tuck Hangman Code https://github.com/NatTuck/hangman
-  channel "player:lobby", BattleshipWeb.PlayerChannel
+  channel "player:*", BattleshipWeb.PlayerChannel
+  channel "table:*", BattleshipWeb.TableChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
@@ -26,16 +27,18 @@ defmodule BattleshipWeb.UserSocket do
   # end
 
   #  Pheonix Connectreferenced from Nat Tuck Hangman Code https://github.com/NatTuck/hangman
-  def connect(%{"token" => token}, socket) do
-      case Phoenix.Token.verify(socket, "username", token, max_age: 86400) do
-        {:ok, name} ->
-          socket = assign(socket, :username, name)
-          {:ok, socket}
-        {:error, _} ->
-          :error
-      end
+  # def connect(%{"token" => token}, socket) do
+  #     case Phoenix.Token.verify(socket, "username", token, max_age: 86400) do
+  #       {:ok, name} ->
+  #         socket = assign(socket, :username, name)
+  #         {:ok, socket}
+  #       {:error, _} ->
+  #         :error
+  #     end
+  # end
+  def connect(_params, socket) do
+    {:ok, socket}
   end
-
   # Socket id's are topics that allow you to identify all sockets for a given user:
   #
   #     def id(socket), do: "user_socket:#{socket.assigns.user_id}"
